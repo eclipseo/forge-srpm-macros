@@ -1,3 +1,7 @@
+# Copyright (C) 2023 Maxwell G <maxwell@gtmx.me>
+#
+# SPDX-License-Identifier: GPL-1.0-or-later
+
 # vim: set ts=4:
 PREFIX := /usr
 RPMMACRODIR := $(PREFIX)/lib/rpm/macros.d
