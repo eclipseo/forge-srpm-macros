@@ -2,6 +2,8 @@
 #
 # SPDX-License-Identifier: GPL-1.0-or-later
 
+import os
+
 import pytest
 
 
@@ -90,3 +92,19 @@ def test_github_commit(evaluater):
         f"-n ansible-{commit} :: -n ansible-{commit}"
     )
     assert out[0] == expected
+
+
+@pytest.mark.parametrize(
+    "forgeurl, version",
+    [
+        pytest.param("https://gitea.com/gitea/act", "0.243.1"),
+        pytest.param("https://codeberg.org/forgejo/forgejo", "1.19.0-2"),
+    ],
+)
+def test_gitea_codeberg_simple_v(evaluater, forgeurl, version):
+    # Test that trailing slash works
+    defines = {"forgeurl": forgeurl + "/", "version": version, "tag": "v%{version}"}
+    out = evaluater(["%forgemeta", "%{forgesource} :: %{forgesetupargs}"], defines)
+
+    sourceurl = f"{forgeurl}/archive/v{version}.tar.gz"
+    assert out[0] == f"{sourceurl} :: -n {os.path.basename(forgeurl)}"

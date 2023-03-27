@@ -89,6 +89,8 @@ local function idforge(url, silent)
         forge = "github"
         elseif  string.match(url, "[^:]+://git.sr.ht/") then
         forge = "sourcehut"
+      elseif (forge == "codeberg.org") then
+        forge = "gitea.com"
       end
       forgeurl, forge = checkforgeurl(url, forge, silent)
     end
