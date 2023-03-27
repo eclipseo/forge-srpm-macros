@@ -6,6 +6,8 @@ SPDX-License-Identifier: GPL-1.0-or-later
 
 # forge-srpm-macros
 
+[![builds.sr.ht status](https://builds.sr.ht/~gotmax23/forge-srpm-macros/commits/main.svg)](https://builds.sr.ht/~gotmax23/forge-srpm-macros/commits/main?)
+
 These macros simplify the packaging of forge-hosted projects.
 They automatically compute the Source urls based on macros set in the specfile.
 This code has been split out from redhat-rpm-config to ease maintenance.
