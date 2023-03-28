@@ -123,21 +123,21 @@ def test_gitea_codeberg_simple_v(evaluater, forgeurl, version):
             "gopls/v0.9.0",
             "{forgeurl}/archive/{tag}.tar.gz#/golang-x-tools-gopls-v0.9.0.tar.gz",
             "golang-x-tools-gopls/v0.9.0",
-            id="git.sr.ht"
+            id="git.sr.ht",
         ),
         pytest.param(
             "https://github.com/golang/tools",
             "gopls/v0.9.0",
             "{forgeurl}/archive/{tag}/tools-gopls-v0.9.0.tar.gz",
             "tools-gopls-v0.9.0",
-            id="github.com"
+            id="github.com",
         ),
         pytest.param(
             "https://gitea.com/gitea/go-sdk",
             "gitea/v0.15.1",
             "{forgeurl}/archive/{tag}.tar.gz#/gitea-v0.15.1.tar.gz",
             "go-sdk",
-            id="gitea.com"
+            id="gitea.com",
         ),
     ],
 )
@@ -152,3 +152,42 @@ def test_slash_tags(evaluater, forgeurl, tag, sourceurl, topdir):
     topdir = topdir.format(**defines)
     assert out[0] == f"{sourceurl} :: -n {topdir}"
     return sourceurl
+
+
+@pytest.mark.parametrize(
+    "defines, name, ref, distprefix",
+    [
+        pytest.param(
+            {
+                "forgeurl": "https://gitlab.com/redhat/centos-stream/rpms/redhat-rpm-config",
+                "commit": "446d35133d975f7a4cdc848cfdfa247b5a7f7ab6",
+            },
+            "redhat-rpm-config",
+            "{commit}",
+            ".git446d351",
+            id="redhat-rpm-config snapshot",
+        ),
+        pytest.param(
+            {
+                "forgeurl": "https://gitlab.com/fedora/legal/fedora-license-data",
+                "tag": "fedora-license-data-1.16-1",
+            },
+            "fedora-license-data",
+            "{tag}",
+            ".gitfedora.license.data.1.16.1",
+            id="fedora-license-data tag",
+        ),
+    ],
+)
+def test_gitlab_nested(evaluater, defines, name, ref, distprefix):
+    """
+    Check that tag and commit forgeurls work with nested Gitlab groups
+    """
+    out = evaluater(
+        ["%forgemeta", "%{forgesource} :: %{forgesetupargs} :: %{?distprefix}"], defines
+    )
+    ref = ref.format(**defines)
+    sourceurl = "{forgeurl}/-/archive/{ref}/{name}-{ref}.tar.bz2"
+    sourceurl = sourceurl.format(**defines, name=name, ref=ref)
+    topdir = "{name}-{ref}".format(**defines, name=name, ref=ref)
+    assert out[0] == f"{sourceurl} :: -n {topdir} :: {distprefix}"
