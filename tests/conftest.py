@@ -17,7 +17,7 @@ PARENT = Path(__file__).resolve().parent.parent
 #      pytest
 # MACRO_DIR="" MACRO_LUA_DIR="" to only use system paths
 MACRO_DIR = Path(os.environ.get("MACRO_DIR", PARENT / "rpm/macros.d"))
-MACRO_LUA_DIR = Path(os.environ.get("MACRO_LUA_PATH", PARENT / "rpm/lua"))
+MACRO_LUA_DIR = Path(os.environ.get("MACRO_LUA_DIR", PARENT / "rpm/lua"))
 
 
 def macros_path() -> list[str]:
