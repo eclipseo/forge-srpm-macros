@@ -20,7 +20,7 @@ local function checkforgeurl(url, id, silent)
   local checkedid   = nil
   local urlpatterns = {
     gitlab = {
-      pattern     = 'https://[^/]+/[^/]+/[^/#?]+',
+      pattern     = 'https://[^#?]+',
       description = 'https://(…[-.])gitlab[-.]…/owner/repo'},
     pagure = {
       pattern     = 'https://[^/]+/[^/#?]+',
@@ -119,7 +119,8 @@ local function meta(suffix, verbose, informative, silent)
       archivename = "%{repo"         .. suffix .. "}-%{ref"           .. suffix .. "}",
       topdir      = "%{archivename"  .. suffix .. "}" },
     gitlab = {
-      archiveurl  = "%{forgeurl"     .. suffix .. "}/-/archive/%{ref" .. suffix .. "}/%{archivename" .. suffix .. "}.%{archiveext" .. suffix .. "}" },
+      archiveurl  = "%{forgeurl"     .. suffix .. "}/-/archive/%{ref" .. suffix .. "}/%{archivename" .. suffix .. "}.%{archiveext" .. suffix .. "}",
+      repo        = '%{lua:print(string.match(rpm.expand("%{forgeurl' .. suffix .. '}"), "^[^:]+://[^?#]+/([^/?#]+)"))}' },
     pagure = {
       archiveext  = "tar.gz",
       repo        = '%{lua:print(string.match(rpm.expand("%{forgeurl' .. suffix .. '}"), "^[^:]+://[^/]+/([^/?#]+)"))}',
