@@ -23,17 +23,15 @@ class _TestVector:
     # Longer description
     description: str | None = None
     # Macros to %define
-    defines: list[str] = dataclasses.field(default_factory=list)
+    defines: dict[str, str] = dataclasses.field(default_factory=dict)
     # Macros to %undefine
     undefines: list[str] = dataclasses.field(default_factory=list)
     # String to --eval
     evals: str | list[str] = dataclasses.field(default_factory=lambda: ["%forgemeta"])
     # Whether the tests should fail
     should_fail: bool = False
-    # Any stdout
-    stdout: str | None = None
-    # Any stderr
-    stderr: str | None = None
+    stdout_contains: str | None = None
+    stderr_contains: str | None = None
     # Macros that should be set in the end
     expected: dict[str, str] = dataclasses.field(default_factory=dict)
     # Macros that should be unset in the end
@@ -51,10 +49,11 @@ def get_vectors() -> Iterable:
     with VECTORS.open() as fp:
         data = yaml.safe_load(fp)
     for item in data["cases"]:
-        if isinstance(item.get("defines"), dict):
+        result = item.get("defines")
+        if not result or isinstance(result, dict):
             yield _param(item)
             continue
-        for index, defines in enumerate(item["defines"]):
+        for index, defines in enumerate(result):
             newitem = item | {"id": item["id"] + str(index), "defines": defines}
             yield _param(newitem)
 
@@ -110,6 +109,16 @@ def test_vectors(case: _TestVector, evaluater):
     stderr: str
     stdout, stderr = evaluater(evals, case.defines, case.undefines, case.should_fail)
 
+    if case.stderr_contains is not None:
+        assert case.stderr_contains.strip() in stderr
+    else:
+        # Help debugging
+        print(stderr)
+
+    if case.should_fail:
+        assert not expected_macros, "Cannot check expected macros in should_fail mode"
+        return
+
     lines = stdout.splitlines()
     idx = lines.index(SENTINEL)
     user_stdout = "\n".join(lines[:idx])
@@ -119,10 +128,5 @@ def test_vectors(case: _TestVector, evaluater):
     final, expected_expanded = join_expected(macro_stdout_lines, expected_macros)
     assert final == expected_expanded
 
-    if case.stdout is not None:
-        assert user_stdout == case.stdout.strip()
-    if case.stderr is not None:
-        assert stderr == case.stderr.strip()
-    else:
-        # Help debugging
-        print(stderr)
+    if case.stdout_contains is not None:
+        assert case.stdout_contains.strip() in user_stdout

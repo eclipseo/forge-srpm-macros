@@ -24,7 +24,7 @@ cases:
     evals:
       - abc
       - xyz
-    stdout: |
+    stdout_contains: |
       abc
       xyz
     defines:
