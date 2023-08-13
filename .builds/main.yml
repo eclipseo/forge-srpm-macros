@@ -7,6 +7,7 @@ image: fedora/rawhide
 packages:
   - pipx
   - python3-pytest
+  - python3-pyyaml
   - redhat-rpm-config
   - rpm
 sources:

@@ -1,0 +1,245 @@
+# Copyright (C) 2023 Maxwell G <maxwell@gtmx.me>
+# SPDX-License-Identifier: GPL-1.0-or-later
+
+# This file contains a large set of test vectors for the forge macros.
+# Please use real projects and real versions so the resulting URLs can be
+# checked for accuracy.
+
+_anchors:
+  zeroidx: &zeroidx
+    - version
+    - forgesource
+    - forgesetupargs
+    - archivename
+    - archiveext
+    - archiveurl
+    - topdir
+    - extractdir
+    - repo
+    - scm
+
+cases:
+  - id: smoke
+    description: Make sure the test fixtures work
+    evals:
+      - abc
+      - xyz
+    stdout: |
+      abc
+      xyz
+    defines:
+      hello: world
+    expected:
+      "__patch": "/usr/bin/patch"
+      "hello": "world"
+      "nil": ""
+    expected_undefined:
+      - bskdksksks
+
+  - id: github_forgesource_simple
+    description: Ensure that a simple Github repository works as expected
+    defines:
+      version: "2.14.0"
+      forgeurl: https://github.com/ansible/ansible
+    expected:
+      forgesource: "%{forgeurl}/archive/v%{version}/ansible-%{version}.tar.gz"
+      forgesetupargs: "-n ansible-%{version}"
+      archivename: "ansible-%{version}"
+      archiveext: "tar.gz"
+      archiveurl: "%{forgesource}"
+      topdir: "ansible-%{version}"
+      extractdir: "ansible-%{version}"
+      repo: ansible
+      scm: git
+    zero_indexed: *zeroidx
+    expected_undefined:
+      - distprefix
+
+  - id: github_forgesource_no_v
+    description: >
+      Ensure that a simple Github repository that doesn't use v-prefixed tags
+      works as expected.
+    defines:
+      version: "7.0.0"
+      # Disable v-prefixed tags
+      tag: "%{version}"
+      forgeurl: https://github.com/ansible-collections/community.general
+    expected:
+      forgesource: "%{forgeurl}/archive/%{version}/community.general-%{version}.tar.gz"
+      forgesetupargs: "-n community.general-%{version}"
+      archivename: "community.general-%{version}"
+      archiveext: "tar.gz"
+      archiveurl: "%{forgesource}"
+      topdir: "community.general-%{version}"
+      extractdir: "community.general-%{version}"
+      repo: community.general
+      scm: git
+    zero_indexed: *zeroidx
+    expected_undefined:
+      - distprefix
+
+  - id: github_forgesource_commit
+    defines:
+      forgeurl: "https://github.com/ansible/ansible"
+      commit: "520bb66f8ab6d53750f48f024287572962d975fa"
+      version: 2.14.0
+    expected:
+      forgesource: "%{forgeurl}/archive/%{commit}/ansible-%{commit}.tar.gz"
+      forgesetupargs: "-n ansible-%{commit}"
+      archivename: "ansible-%{commit}"
+      archiveext: "tar.gz"
+      archiveurl: "%{forgesource}"
+      topdir: "ansible-%{commit}"
+      extractdir: "ansible-%{commit}"
+      repo: ansible
+      scm: git
+    zero_indexed: &zeroidx_commit
+      - commit
+      - distprefix
+      - forgesource
+      - forgesetupargs
+      - archivename
+      - archiveext
+      - archiveurl
+      - topdir
+      - extractdir
+      - repo
+      - scm
+
+  - id: gitlab_forgesource_simple
+    description: Ensure that a simple Gitlab repository works as expected
+    defines:
+      version: "1.16.2"
+      forgeurl: "https://gitlab.com/fdroid/fdroidclient"
+    expected:
+      forgesource: "%{forgeurl}/-/archive/%{version}/fdroidclient-%{version}.tar.bz2"
+      forgesetupargs: "-n fdroidclient-%{version}"
+      archivename: "fdroidclient-%{version}"
+      archiveext: "tar.bz2"
+      archiveurl: "%{forgesource}"
+      topdir: "fdroidclient-%{version}"
+      extractdir: "fdroidclient-%{version}"
+      repo: fdroidclient
+      scm: git
+    zero_indexed: *zeroidx
+    expected_undefined:
+      - distprefix
+
+  - id: gitlab_forgesource_commit
+    defines:
+      commit: 9530f51f2c8ad05399c42a9bae845fc6c34de8e2
+      forgeurl: "https://gitlab.com/fdroid/fdroidclient/"
+    expected:
+      forgesource: "%{forgeurl}/-/archive/%{commit}/fdroidclient-%{commit}.tar.bz2"
+      forgesetupargs: "-n fdroidclient-%{commit}"
+      archivename: "fdroidclient-%{commit}"
+      archiveext: "tar.bz2"
+      archiveurl: "%{forgesource}"
+      topdir: "fdroidclient-%{commit}"
+      extractdir: "fdroidclient-%{commit}"
+      repo: fdroidclient
+      scm: git
+    zero_indexed: *zeroidx_commit
+
+  - id: test_gitea_simple
+    defines:
+      - version: "0.243.1"
+        forgeurl: "https://gitea.com/gitea/act"
+        name: "act"
+      - version: "1.19.0-2"
+        forgeurl: "https://codeberg.org/forgejo/forgejo"
+        name: "forgejo"
+    expected:
+      forgesource: "%{forgeurl}/archive/%{version}.tar.gz"
+      forgesetupargs: "-n %{name}"
+      archivename: "%{version}"
+      archiveext: "tar.gz"
+      archiveurl: "%{forgeurl}/archive/%{version}.tar.gz"
+      topdir: "%{name}"
+      extractdir: "%{name}"
+      repo: "%{name}"
+      scm: git
+    zero_indexed: *zeroidx
+    expected_undefined:
+      - distprefix
+
+  - id: test_gitea_commit
+    defines:
+      commit: "f5dbac2d6ad8cbbba0fdb2642281dcfd0573bcf8"
+      forgeurl: "https://codeberg.org/forgejo/forgejo/"
+      name: "forgejo"
+    expected:
+      forgesource: "%{forgeurl}/archive/%{commit}.tar.gz"
+      forgesetupargs: "-n %{name}"
+      archivename: "%{commit}"
+      archiveext: "tar.gz"
+      archiveurl: "%{forgeurl}/archive/%{commit}.tar.gz"
+      topdir: "%{name}"
+      extractdir: "%{name}"
+      repo: "%{name}"
+      scm: git
+    zero_indexed: *zeroidx_commit
+
+  - id: test_sourcehut_simple
+    defines:
+      # Sourcehut eats its own dogfood
+      name: "git.sr.ht"
+      forgeurl: "https://git.sr.ht/~sircmpwn/git.sr.ht"
+      version: "0.84.2"
+    expected:
+      forgesource: "%{forgeurl}/archive/%{version}.tar.gz#/git.sr.ht-%{version}.tar.gz"
+      forgesetupargs: "-n %{name}-%{version}"
+      archivename: "%{name}-%{version}"
+      archiveext: "tar.gz"
+      archiveurl: "%{forgeurl}/archive/%{version}.tar.gz"
+      topdir: "%{name}-%{version}"
+      extractdir: "%{name}-%{version}"
+      repo: "%{name}"
+      scm: git
+    zero_indexed: *zeroidx
+    expected_undefined:
+      - distprefix
+
+  - id: test_sourcehut_commit
+    defines:
+      # Sourcehut eats its own dogfood
+      name: "git.sr.ht"
+      forgeurl: "https://git.sr.ht/~sircmpwn/git.sr.ht"
+      commit: "e1244429d405417fc10259968bf6102e284cae6d"
+    expected:
+      forgesource: "%{forgeurl}/archive/%{commit}.tar.gz#/git.sr.ht-%{commit}.tar.gz"
+      forgesetupargs: "-n %{name}-%{commit}"
+      archivename: "%{name}-%{commit}"
+      archiveext: "tar.gz"
+      archiveurl: "%{forgeurl}/archive/%{commit}.tar.gz"
+      topdir: "%{name}-%{commit}"
+      extractdir: "%{name}-%{commit}"
+      repo: "%{name}"
+      scm: git
+    zero_indexed: *zeroidx_commit
+
+  - id: sourcehut_v_prefix
+    description: Ensure that a v-prefixed sourcehut repository works as expected.
+    defines:
+      # With and without trailing slash
+      - version: "0.5.0"
+        tag: "v%{version}"
+        name: "fedrq"
+        forgeurl: "https://git.sr.ht/~gotmax23/%{name}"
+      - version: "0.5.0"
+        tag: "v%{version}"
+        name: "fedrq"
+        forgeurl: "https://git.sr.ht/~gotmax23/%{name}/"
+    expected:
+      forgesource: "%{forgeurl}/archive/v0.5.0.tar.gz#/fedrq-0.5.0.tar.gz"
+      forgesetupargs: "-n fedrq-v%{version}"
+      archivename: "fedrq-%{version}"
+      archiveext: "tar.gz"
+      archiveurl: "%{forgeurl}/archive/v0.5.0.tar.gz"
+      topdir: "fedrq-v%{version}"
+      extractdir: "fedrq-v%{version}"
+      repo: fedrq
+      scm: git
+    zero_indexed: *zeroidx
+    expected_undefined:
+      - distprefix
