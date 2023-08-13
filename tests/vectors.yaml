@@ -341,3 +341,43 @@ cases:
       repo: "shell"
       scm: git
     zero_indexed: *zeroidx
+
+  - id: multisource_all
+    defines: &multisource_defines
+      - forgeurl0: https://github.com/ansible/ansible
+        version: "2.15.2"
+        forgeurl1: https://github.com/ansible/ansible-documentation
+        version1: "2.15.2"
+    expected: &multisource_expected
+      forgesource: "%{forgeurl}/archive/v%{version}/ansible-%{version}.tar.gz"
+      forgesetupargs: "-n ansible-%{version}"
+      archivename: "ansible-%{version}"
+      archiveext: "tar.gz"
+      archiveurl: "%{forgesource}"
+      topdir: "ansible-%{version}"
+      extractdir: "ansible-%{version}"
+      repo: ansible
+      scm: git
+      forgesource1: "%{forgeurl1}/archive/v%{version}/ansible-documentation-%{version}.tar.gz"
+      forgesetupargs1: "-T -D -b 1 -n ansible-documentation-%{version}"
+      archivename1: "ansible-documentation-%{version}"
+      archiveext1: "tar.gz"
+      archiveurl1: "%{forgesource1}"
+      topdir1: "ansible-documentation-%{version}"
+      extractdir1: "ansible-documentation-%{version}"
+      scm1: git
+    zero_indexed: *zeroidx
+    expected_undefined:
+      - distprefix
+    evals:
+      - "%forgemeta -a"
+
+  - id: multisource_separate
+    defines: *multisource_defines
+    expected: *multisource_expected
+    zero_indexed: *zeroidx
+    expected_undefined:
+      - distprefix
+    evals:
+      - "%forgemeta -z0"
+      - "%forgemeta -z1"
