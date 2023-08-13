@@ -37,7 +37,7 @@ Requires:       redhat-rpm-config
 
 
 %install
-%make_install DESTDIR=%{buildroot} RPMMACRODIR=%{_rpmmacrodir} RPMLUADIR=%{_rpmluadir}
+%make_install RPMMACRODIR=%{_rpmmacrodir} RPMLUADIR=%{_rpmluadir}
 
 
 %check
