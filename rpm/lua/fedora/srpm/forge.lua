@@ -138,6 +138,7 @@ local function meta(suffix, verbose, informative, silent)
       archivename = "%{owner"        .. suffix .. "}-%{repo"          .. suffix .. "}-%{ref"         .. suffix .. "}",
       archiveurl  = "%{forgeurl"     .. suffix .. "}/archive/%{ref"   .. suffix .. "}/%{archivename" .. suffix .. "}.%{archiveext" .. suffix .. "}" },
     pagure_ns_fork = {
+      archiveext  = "tar.gz",
       owner       = '%{lua:print(string.match(rpm.expand("%{forgeurl' .. suffix .. '}"), "https://[^/]+/fork/([^/]+)/[^/]+/[^/?#]+"))}',
       namespace   = '%{lua:print(string.match(rpm.expand("%{forgeurl' .. suffix .. '}"), "https://[^/]+/fork/[^/]+/([^/]+)/[^/?#]+"))}',
       repo        = '%{lua:print(string.match(rpm.expand("%{forgeurl' .. suffix .. '}"), "https://[^/]+/fork/[^/]+/[^/]+/([^/?#]+)"))}',
