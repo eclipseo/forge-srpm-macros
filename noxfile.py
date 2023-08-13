@@ -17,11 +17,13 @@ nox.options.sessions = (*LINT_SESSIONS, "test")
 
 # Helpers
 
+
 def git(session: nox.Session, *args, **kwargs):
     return session.run("git", *args, **kwargs, external=True)
 
 
 # General
+
 
 @nox.session(venv_backend="none")
 def lint(session: nox.Session):
