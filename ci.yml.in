@@ -1,0 +1,19 @@
+---
+# Copyright (C) 2023 Maxwell G <maxwell@gtmx.me>
+# SPDX-License-Identifier: GPL-1.0-or-later
+
+# NOTICE: This file is generated from ci.yml.in. Do not edit!
+
+image: @@IMAGE@@
+packages:
+  - "(epel-rpm-macros if epel-release)"
+  - python3-pytest
+  - python3-pyyaml
+  - redhat-rpm-config
+  - rpm
+sources:
+  - https://git.sr.ht/~gotmax23/forge-srpm-macros
+tasks:
+  - pytest: |
+      cd forge-srpm-macros
+      pytest -vv
