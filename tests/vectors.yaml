@@ -243,3 +243,83 @@ cases:
     zero_indexed: *zeroidx
     expected_undefined:
       - distprefix
+
+  - id: pagure_simple
+    defines:
+      # pagure
+      - version: "5.13.3"
+        tag: "5.13.3"
+        forgeurl: https://pagure.io/pagure
+        name: pagure
+        _vp_: "5.13.3"
+      # pagure_fork
+      - version: "5.13.3"
+        tag: "5.13.3"
+        forgeurl: https://pagure.io/fork/gotmax23/pagure/
+        name: pagure
+        _vp_: "5.13.3"
+        _np_: gotmax23-
+      # pagure_ns
+      - version: "1.5.0"
+        tag: "v1.5.0"
+        forgeurl: https://pagure.io/GoSIG/go2rpm
+        _np_: "GoSIG-"
+        name: go2rpm
+        _vp_: "v1.5.0"
+      # pagure_ns_fork
+      - version: "1.5.0"
+        tag: "v1.5.0"
+        forgeurl: https://pagure.io/fork/gotmax23/GoSIG/go2rpm
+        _np_: "gotmax23-GoSIG-"
+        name: go2rpm
+        _vp_: "v1.5.0"
+    expected:
+      forgesource: "%{forgeurl}/archive/%{_vp_}/%{?_np_}%{name}-%{_vp_}.tar.gz"
+      forgesetupargs: "-n %{?_np_}%{name}-%{_vp_}"
+      archivename: "%{?_np_}%{name}-%{_vp_}"
+      archiveext: "tar.gz"
+      archiveurl: "%{forgesource}"
+      topdir: "%{?_np_}%{name}-%{_vp_}"
+      extractdir: "%{?_np_}%{name}-%{_vp_}"
+      repo: "%{name}"
+      scm: git
+    zero_indexed: *zeroidx
+    expected_undefined:
+      - distprefix
+
+  - id: pagure_commit
+    defines:
+      # pagure
+      - forgeurl: https://pagure.io/pagure/
+        name: pagure
+        commit: "d11ec7e9efb10aa2f075debc0574579e2fb46b54"
+        _vp_: "d11ec7e9efb10aa2f075debc0574579e2fb46b54"
+      # pagure_fork
+      - forgeurl: https://pagure.io/fork/gotmax23/pagure/
+        name: pagure
+        _np_: gotmax23-
+        commit: "d11ec7e9efb10aa2f075debc0574579e2fb46b54"
+        _vp_: "d11ec7e9efb10aa2f075debc0574579e2fb46b54"
+      # pagure_ns
+      - forgeurl: https://pagure.io/GoSIG/go2rpm/
+        name: go2rpm
+        _np_: "GoSIG-"
+        commit: "4aaaa6b38fe67bb452e86d18d66dcbb3de231a58"
+        _vp_: "4aaaa6b38fe67bb452e86d18d66dcbb3de231a58"
+      # pagure_ns_fork
+      - forgeurl: "https://pagure.io/fork/gotmax23/GoSIG/go2rpm/"
+        name: go2rpm
+        _np_: "gotmax23-GoSIG-"
+        commit: "4aaaa6b38fe67bb452e86d18d66dcbb3de231a58"
+        _vp_: "4aaaa6b38fe67bb452e86d18d66dcbb3de231a58"
+    expected:
+      forgesource: "%{forgeurl}/archive/%{_vp_}/%{?_np_}%{name}-%{_vp_}.tar.gz"
+      forgesetupargs: "-n %{?_np_}%{name}-%{_vp_}"
+      archivename: "%{?_np_}%{name}-%{_vp_}"
+      archiveext: "tar.gz"
+      archiveurl: "%{forgesource}"
+      topdir: "%{?_np_}%{name}-%{_vp_}"
+      extractdir: "%{?_np_}%{name}-%{_vp_}"
+      repo: "%{name}"
+      scm: git
+    zero_indexed: *zeroidx_commit
