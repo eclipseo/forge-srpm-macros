@@ -17,7 +17,6 @@ def test_github_forgesource_simple(evaluater):
     out = evaluater(["%forgemeta", "%forgesource"], defines)
     sourceurl = f"{forgeurl}/archive/v2.14.0/ansible-2.14.0.tar.gz"
     assert out[0] == sourceurl
-    return sourceurl
 
 
 @pytest.mark.parametrize(
@@ -38,7 +37,6 @@ def test_gitlab_forgesource_archiveext(archiveext, evaluater):
 
     sourceurl = f"{forgeurl}/-/archive/1.16.2/fdroidclient-1.16.2.{archiveext}"
     assert out[0] == sourceurl
-    return sourceurl
 
 
 def test_sourcehut_v(evaluater):
@@ -70,7 +68,6 @@ def test_sourcehut_v(evaluater):
         "-n fedrq-v0.5.0 :: -n fedrq-v0.5.0"
     )
     assert out[0] == expected
-    return sourceurl
 
 
 def test_github_commit(evaluater):
@@ -95,7 +92,6 @@ def test_github_commit(evaluater):
         f"-n ansible-{commit} :: -n ansible-{commit}"
     )
     assert out[0] == expected
-    return sourceurl
 
 
 @pytest.mark.parametrize(
@@ -112,7 +108,6 @@ def test_gitea_codeberg_simple_v(evaluater, forgeurl, version):
 
     sourceurl = f"{forgeurl}/archive/v{version}.tar.gz"
     assert out[0] == f"{sourceurl} :: -n {os.path.basename(forgeurl)}"
-    return sourceurl
 
 
 @pytest.mark.parametrize(
@@ -151,7 +146,6 @@ def test_slash_tags(evaluater, forgeurl, tag, sourceurl, topdir):
     sourceurl = sourceurl.format(**defines)
     topdir = topdir.format(**defines)
     assert out[0] == f"{sourceurl} :: -n {topdir}"
-    return sourceurl
 
 
 @pytest.mark.parametrize(
