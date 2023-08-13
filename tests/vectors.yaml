@@ -17,6 +17,19 @@ _anchors:
     - extractdir
     - repo
     - scm
+  zeroidx_commit: &zeroidx_commit
+    - commit
+    - distprefix
+    - _forgeversionsuffix
+    - forgesource
+    - forgesetupargs
+    - archivename
+    - archiveext
+    - archiveurl
+    - topdir
+    - extractdir
+    - repo
+    - scm
 
 cases:
   - id: smoke
@@ -93,18 +106,29 @@ cases:
       extractdir: "ansible-%{commit}"
       repo: ansible
       scm: git
-    zero_indexed: &zeroidx_commit
-      - commit
-      - distprefix
-      - forgesource
-      - forgesetupargs
-      - archivename
-      - archiveext
-      - archiveurl
-      - topdir
-      - extractdir
-      - repo
-      - scm
+      distprefix: ".git520bb66"
+    zero_indexed: *zeroidx_commit
+
+    # Different semantics are used when a date is specified
+  - id: github_forgesource_commit_with_date
+    defines:
+      forgeurl: "https://github.com/ansible/ansible"
+      commit: "520bb66f8ab6d53750f48f024287572962d975fa"
+      version: 2.14.0
+      date: "20230813"
+    expected:
+      forgesource: "%{forgeurl}/archive/%{commit}/ansible-%{commit}.tar.gz"
+      forgesetupargs: "-n ansible-%{commit}"
+      archivename: "ansible-%{commit}"
+      archiveext: "tar.gz"
+      archiveurl: "%{forgesource}"
+      topdir: "ansible-%{commit}"
+      extractdir: "ansible-%{commit}"
+      repo: ansible
+      scm: git
+      distprefix: ".20230813git520bb66"
+      _forgeversionsuffix0: ".20230813git520bb66"
+    zero_indexed: *zeroidx_commit
 
   - id: gitlab_forgesource_simple
     description: Ensure that a simple Gitlab repository works as expected
