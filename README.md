@@ -8,6 +8,10 @@ SPDX-License-Identifier: GPL-1.0-or-later
 
 [![builds.sr.ht status](https://builds.sr.ht/~gotmax23/forge-srpm-macros/commits/main.svg)](https://builds.sr.ht/~gotmax23/forge-srpm-macros/commits/main?)
 
+[![copr build status][badge-copr]][link-copr] (gotmax23/forge-srpm-macros)
+
+[![copr build status][badge-copr-dev]][link-copr-dev] (gotmax23/forge-srpm-macros-dev)
+
 These macros simplify the packaging of forge-hosted projects.
 They automatically compute the Source urls based on macros set in the specfile.
 This code has been split out from redhat-rpm-config to ease maintenance.
@@ -42,4 +46,7 @@ This repository is licensed under
 
     SPDX-License-Identifer: GPL-1.0-or-later
 
-to match the license of redhat-rpm-config.
+[badge-copr]: https://copr.fedorainfracloud.org/coprs/gotmax23/forge-srpm-macros/package/forge-srpm-macros/status_image/last_build.png
+[link-copr]: https://copr.fedorainfracloud.org/coprs/gotmax23/forge-srpm-macros/
+[badge-copr-dev]: https://copr.fedorainfracloud.org/coprs/gotmax23/forge-srpm-macros-dev/package/forge-srpm-macros/status_image/last_build.png
+[link-copr-dev]: https://copr.fedorainfracloud.org/coprs/gotmax23/forge-srpm-macros-dev/

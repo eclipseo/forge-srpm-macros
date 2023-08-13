@@ -5,6 +5,7 @@
 
 image: fedora/rawhide
 packages:
+  - pipx
   - nox
   - python3-pytest
   - python3-pyyaml
@@ -12,7 +13,15 @@ packages:
   - rpm
 sources:
   - https://git.sr.ht/~gotmax23/forge-srpm-macros
+secrets:
+  # gotmax23/forge-srpm-macros-dev webhook
+  - 454377f4-e19c-4e44-a21d-6462e3d06ea2
 tasks:
+  - setup: |
+      pipx install git+https://git.sr.ht/~gotmax23/releaserr
+  - copr-webhook: |
+      cd forge-srpm-macros
+      releaserr copr-webhook ~/.copr-dev-hook --branch origin/main --skip-if-missing
   - pytest: |
       cd forge-srpm-macros
       pytest -vv
