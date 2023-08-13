@@ -71,3 +71,83 @@ end
 %forgeautosetup(z:vNS:p:q) %{lua:
 print(rpm.expand("%autosetup %{-v} %{-N} %{?-S} %{?-p} %{?forgesetupargs" .. rpm.expand("%{-z*}") .. "}\\n"))
 }
+
+# Appends the values of %_forgeversionsuffix<number> that %forgemeta sets
+# to Version.
+# This follows the new Versioning Guidelines that discourage putting release
+# snapshot info in Release.
+#
+# If no %forgeversionsuffix<number> is set,
+# the value is equivalent to %version.
+#
+# By default, %version and the suffix are separated with a '^'.
+#
+# Control variables, flags and arguments:
+#   -p           Use the pre-release separator '~' instead of '^'
+#   -z <number>  Only add the release suffix for a specific block.
+#                By default, -z0 is used.
+#   -a           Concatenate the release suffixes for all blocks
+
+# For example:
+#   %global forgeurl https://github.com/foo/bar
+#   %global version 2.15.0
+#   %global commit <POST RELEASE SNAPSHOT>
+#   %forgemeta
+#   [....]
+#   Version: %{forgeversion}
+
+%forgeversion(pz:a) %{lua:
+-- Zero-alias version/version0 macros
+local fedora = require "fedora.common"
+fedora.zalias({"version", "distprefix", "_forgeversionsuffix"}, nil)
+
+-- Determine the seperator
+local sep = "^"
+if opt.p then
+    sep = "~"
+end
+
+-- Release uses %dist and %distprefix, so we need to make sure it's not used before
+if macros.release then
+    rpm.expand(
+      "%{error:'Version: %%forgeversion' must be invoked before setting Release.}"
+    )
+end
+
+-- Determine baseversion
+local baseversion = macros.version
+if not baseversion then
+  rpm.expand(
+    "%{error:You must define %%version" ..
+    " (%%global version <VERSION>) prior to invoking this macro.}"
+  )
+end
+
+-- Concatenate parts. Clear out %distprefix* to avoid duplicating data in Release.
+-- forgemeta stores the same values in _forgeversionsuffix so we can run
+-- forgeversion multiple times.
+local part = ""
+rpm.undefine("distprefix")
+if opt.a then
+  for i=0,9999 do
+    local curpart = macros["_forgeversionsuffix" .. i]
+    if curpart then
+      part = part .. curpart
+    end
+    rpm.undefine("distprefix" .. i)
+  end
+else
+  local i = opt.z or ""
+  part = part .. (macros["_forgeversionsuffix" .. i] or "")
+end
+
+-- Strip any leading '.'
+part = part:gsub("^%.", "")
+
+-- Print final version
+if part ~= "" then
+  print(baseversion .. sep .. part)
+else
+  print(baseversion)
+end
+}

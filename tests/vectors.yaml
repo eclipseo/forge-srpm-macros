@@ -163,6 +163,8 @@ cases:
       extractdir: "fdroidclient-%{commit}"
       repo: fdroidclient
       scm: git
+      distprefix: ".git9530f51"
+      _forgeversionsuffix: ".git9530f51"
     zero_indexed: *zeroidx_commit
 
   - id: test_gitea_simple
@@ -202,6 +204,8 @@ cases:
       extractdir: "%{name}"
       repo: "%{name}"
       scm: git
+      distprefix: ".gitf5dbac2"
+      _forgeversionsuffix: ".gitf5dbac2"
     zero_indexed: *zeroidx_commit
 
   - id: test_sourcehut_simple
@@ -240,6 +244,8 @@ cases:
       extractdir: "%{name}-%{commit}"
       repo: "%{name}"
       scm: git
+      distprefix: ".gite124442"
+      _forgeversionsuffix: ".gite124442"
     zero_indexed: *zeroidx_commit
 
   - id: sourcehut_v_prefix
@@ -318,24 +324,28 @@ cases:
         name: pagure
         commit: "d11ec7e9efb10aa2f075debc0574579e2fb46b54"
         _vp_: "d11ec7e9efb10aa2f075debc0574579e2fb46b54"
+        _cp_: ".gitd11ec7e"
       # pagure_fork
       - forgeurl: https://pagure.io/fork/gotmax23/pagure/
         name: pagure
         _np_: gotmax23-
         commit: "d11ec7e9efb10aa2f075debc0574579e2fb46b54"
         _vp_: "d11ec7e9efb10aa2f075debc0574579e2fb46b54"
+        _cp_: ".gitd11ec7e"
       # pagure_ns
       - forgeurl: https://pagure.io/GoSIG/go2rpm/
         name: go2rpm
         _np_: "GoSIG-"
         commit: "4aaaa6b38fe67bb452e86d18d66dcbb3de231a58"
         _vp_: "4aaaa6b38fe67bb452e86d18d66dcbb3de231a58"
+        _cp_: ".git4aaaa6b"
       # pagure_ns_fork
       - forgeurl: "https://pagure.io/fork/gotmax23/GoSIG/go2rpm/"
         name: go2rpm
         _np_: "gotmax23-GoSIG-"
         commit: "4aaaa6b38fe67bb452e86d18d66dcbb3de231a58"
         _vp_: "4aaaa6b38fe67bb452e86d18d66dcbb3de231a58"
+        _cp_: ".git4aaaa6b"
     expected:
       forgesource: "%{forgeurl}/archive/%{_vp_}/%{?_np_}%{name}-%{_vp_}.tar.gz"
       forgesetupargs: "-n %{?_np_}%{name}-%{_vp_}"
@@ -346,6 +356,8 @@ cases:
       extractdir: "%{?_np_}%{name}-%{_vp_}"
       repo: "%{name}"
       scm: git
+      distprefix: "%{_cp_}"
+      _forgeversionsuffix: "%{_cp_}"
     zero_indexed: *zeroidx_commit
 
   - id: bitbucket_simple
@@ -353,7 +365,6 @@ cases:
       - forgeurl: https://bitbucket.org/creachadair/shell
         commit: 9479d77f2b7f1037f17e7eaac680bf9718c28499
         version: 0.0.7
-        distprefix: "%nil"
     expected:
       archiveext: "tar.bz2"
       archiveurl: "%{forgeurl}/get/%{commit}.tar.bz2"
@@ -364,7 +375,9 @@ cases:
       owner: "creachadair"
       repo: "shell"
       scm: git
-    zero_indexed: *zeroidx
+      distprefix: ".git9479d77"
+      _forgeversionsuffix: ".git9479d77"
+    zero_indexed: *zeroidx_commit
 
   - id: multisource_all
     defines: &multisource_defines
@@ -405,3 +418,40 @@ cases:
     evals:
       - "%forgemeta -z0"
       - "%forgemeta -z1"
+
+  - id: forge_version_error_1
+    evals:
+      - "%{forgeversion}"
+    should_fail: true
+    stderr_contains: >
+      You must define %version (%global version <VERSION>) prior to invoking
+      this macro.
+
+  - id: forge_version_error_2
+    defines:
+      version: "1.0.0"
+      release: "0"
+    evals:
+      - "%{forgeversion}"
+    should_fail: true
+    stderr_contains: "'Version: %forgeversion' must be invoked before setting Release."
+
+  - id: unit_forge_version
+    defines:
+      version: "1.0.0"
+      _forgeversionsuffix0: ".abcd"
+      _forgeversionsuffix5: ".sxyz"
+      _forgeversionsuffix9999: ".s456"
+    expected:
+      # Basic all usage
+      "forgeversion -a": "1.0.0^abcd.sxyz.s456"
+      # Pre-release
+      "forgeversion -p -a": "1.0.0~abcd.sxyz.s456"
+      # Only first
+      "forgeversion": "1.0.0^abcd"
+      "forgeversion -z0": "1.0.0^abcd"
+      # Only first with pre-release
+      "forgeversion -p": "1.0.0~abcd"
+      # -z12 doesn't exist
+      "forgeversion -z12": "1.0.0"
+      "forgeversion -p -z12": "1.0.0"

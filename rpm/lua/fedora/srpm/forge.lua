@@ -311,13 +311,15 @@ local function meta(suffix, verbose, informative, silent)
     if not ismain then
       distprefix = string.gsub(distprefix, "^%.", ".s")
     end
+    -- See %forgeversion's docstring.
     fedora.safeset ("distprefix"    .. suffix, distprefix, verbose)
+    fedora.safeset ("_forgeversionsuffix"    .. suffix, distprefix, verbose)
   end
   if ismain then
     fedora.zalias({"forgeurl", "forgesource", "forgesetupargs",
                       "archivename", "archiveext", "archiveurl",
                       "topdir", "extractdir", "repo", "owner", "namespace",
-                      "scm", "shortcommit", "distprefix"}, verbose)
+                      "scm", "shortcommit", "distprefix", "_forgeversionsuffix"}, verbose)
   end
   -- Final spec variable summary if the macro was called with -i
   if informative then
@@ -326,7 +328,7 @@ local function meta(suffix, verbose, informative, silent)
                         "archivename", "archiveext", "archiveurl",
                         "topdir", "extractdir", "repo", "owner", "namespace",
                         "scm", "tag", "commit", "shortcommit", "branch", "version",
-                        "date", "distprefix"}, suffix)
+                        "date", "distprefix", "_forgeversionsuffix"}, suffix)
     fedora.echovars({"dist"},"")
     rpm.expand("%{echo:  (snapshot date is either manually supplied or computed once %%{_sourcedir}/%%{archivename" .. suffix .. "}.%%{archiveext" .. suffix .. "} is available)}")
   end
