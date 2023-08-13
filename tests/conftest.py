@@ -20,6 +20,7 @@ MACRO_DIR = Path(os.environ.get("MACRO_DIR", PARENT / "rpm/macros.d"))
 MACRO_LUA_DIR = Path(os.environ.get("MACRO_LUA_DIR", PARENT / "rpm/lua"))
 
 
+@pytest.fixture(scope="session")
 def macros_path() -> list[str]:
     if MACRO_DIR == "":
         return []
@@ -34,6 +35,7 @@ def macros_path() -> list[str]:
     return ["--macros", f"{path}:{MACRO_DIR}/macros.*"]
 
 
+@pytest.fixture(scope="session")
 def lua_path() -> list[str]:
     if MACRO_LUA_DIR == "":
         return []
@@ -48,14 +50,16 @@ def lua_path() -> list[str]:
 
 
 @pytest.fixture
-def evaluater() -> Callable[..., tuple[str, str]]:
+def evaluater(
+    macros_path: list[str], lua_path: list[str]
+) -> Callable[..., tuple[str, str]]:
     def runner(
         exps: str | Sequence[str],
         defines: dict[str, str] | None = None,
         undefines: Sequence[str] = (),
         should_fail: bool = False,
     ) -> tuple[str, str]:
-        cmd: list[str] = ["rpm", *macros_path(), *lua_path()]
+        cmd: list[str] = ["rpm", *macros_path, *lua_path]
         defines = defines or {}
         for name, value in defines.items():
             cmd.extend(("--define", f"{name} {value}"))
