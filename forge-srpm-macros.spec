@@ -15,6 +15,7 @@ Source0:        %{url}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 BuildRequires:  make
 %if %{with tests}
 BuildRequires:  python3-pytest
+BuildRequires:  python3-pyyaml
 # For %%pytest definition
 BuildRequires:  python3-rpm-macros
 %endif
