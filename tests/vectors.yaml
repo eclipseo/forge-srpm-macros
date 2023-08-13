@@ -323,3 +323,21 @@ cases:
       repo: "%{name}"
       scm: git
     zero_indexed: *zeroidx_commit
+
+  - id: bitbucket_simple
+    defines:
+      - forgeurl: https://bitbucket.org/creachadair/shell
+        commit: 9479d77f2b7f1037f17e7eaac680bf9718c28499
+        version: 0.0.7
+        distprefix: "%nil"
+    expected:
+      archiveext: "tar.bz2"
+      archiveurl: "%{forgeurl}/get/%{commit}.tar.bz2"
+      archivename: "creachadair-shell-9479d77f2b7f"
+      forgesource: "%{archiveurl}#/%{archivename}.%{archiveext}"
+      topdir: "%{archivename}"
+      extractdir: "%{archivename}"
+      owner: "creachadair"
+      repo: "shell"
+      scm: git
+    zero_indexed: *zeroidx
