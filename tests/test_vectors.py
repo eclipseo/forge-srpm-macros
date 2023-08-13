@@ -19,7 +19,7 @@ SENTINEL = "*-*" * 20
 @dataclasses.dataclass()
 class _TestVector:
     # Test id
-    id: str
+    id: str  # noqa: A003
     # Longer description
     description: str | None = None
     # Macros to %define

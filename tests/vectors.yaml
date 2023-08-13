@@ -4,7 +4,7 @@
 # This file contains a large set of test vectors for the forge macros.
 # Please use real projects and real versions so the resulting URLs can be
 # checked for accuracy.
-
+---
 _anchors:
   zeroidx: &zeroidx
     - version

@@ -5,7 +5,7 @@
 
 image: fedora/rawhide
 packages:
-  - pipx
+  - nox
   - python3-pytest
   - python3-pyyaml
   - redhat-rpm-config
@@ -16,6 +16,6 @@ tasks:
   - pytest: |
       cd forge-srpm-macros
       pytest -vv
-  - reuse: |
+  - lint: |
       cd forge-srpm-macros
-      pipx run reuse lint
+      nox -e lint

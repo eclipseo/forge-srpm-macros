@@ -2,8 +2,6 @@
 #
 # SPDX-License-Identifier: GPL-1.0-or-later
 
-import os
-
 import pytest
 
 
