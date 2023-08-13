@@ -6,7 +6,7 @@
 
 image: fedora/37
 packages:
-  - "(epel-rpm-macros if epel-release)"
+  - "'(epel-rpm-macros if epel-release)'"
   - python3-pytest
   - python3-pyyaml
   - redhat-rpm-config
