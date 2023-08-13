@@ -8,12 +8,20 @@ from pathlib import Path
 
 import nox
 
+RELEASERR = "releaserr @ git+https://git.sr.ht/~gotmax23/releaserr"
 LINT_SESSIONS = ("static", "formatters", "typing")
 PY_FILES = ("tests", "noxfile.py")
 YAML_FILES = (".builds", "tests/vectors.yaml")
 
 nox.options.sessions = (*LINT_SESSIONS, "test")
 
+# Helpers
+
+def git(session: nox.Session, *args, **kwargs):
+    return session.run("git", *args, **kwargs, external=True)
+
+
+# General
 
 @nox.session(venv_backend="none")
 def lint(session: nox.Session):
@@ -81,3 +89,15 @@ def mockbuild(session: nox.Session):
     if not session.interactive:
         margs.append("--verbose")
     session.run(*margs, external=True)
+
+
+@nox.session
+def bump(session: nox.Session):
+    version = session.posargs[0]
+    session.install(RELEASERR, "fclogr")
+    session.run("releaserr", "check-tag", version)
+    session.run(
+        "fclogr", "bump", "--new", version, "--comment", f"Update to {version}."
+    )
+    git(session, "add", "forge-srpm-macros.spec")
+    session.run("releaserr", "clog", version, "--tag")

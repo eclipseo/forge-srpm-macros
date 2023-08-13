@@ -5,3 +5,5 @@
 __pycache__/
 *.src.rpm
 *.tar.gz
+/FRAG.md
+/GIT_MSG

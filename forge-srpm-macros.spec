@@ -4,8 +4,8 @@
 %bcond tests 1
 
 Name:           forge-srpm-macros
-Version:        0.1.0
-Release:        1%{?dist}
+Version:        0.0.1
+Release:        0%{?dist}
 Summary:        Macros to simplify packaging of forge-hosted projects
 
 License:        GPL-1.0-or-later
@@ -54,7 +54,4 @@ export MACRO_LUA_DIR="%{buildroot}/usr/lib/rpm/lua"
 %{_rpmluadir}/fedora/srpm/forge.lua
 
 
-
 %changelog
-* Fri Aug 11 2023 Maxwell G <maxwell@gtmx.me> - 0.1.0-1
-- Initial package.
