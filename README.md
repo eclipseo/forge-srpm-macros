@@ -22,6 +22,16 @@ This code has been split out from redhat-rpm-config to ease maintenance.
 [archives]: https://lists.sr.ht/~gotmax23/forge-srpm-macros
 [mailto]: mailto:~gotmax/forge-srpm-macros@lists.sr.ht
 
+## Compatibility
+
+Fedora 37 / RPM 4.18 and above are tested in CI.
+
+These macros do not yet use any RPM 4.18+ features,
+but [there are plans][4.17] to adopt newer RPM features that are not available
+on older distributions like EL 9.
+
+[4.17]: https://todo.sr.ht/~gotmax23/forge-srpm-macros/3
+
 ## Contributing
 
 See [CONTRIBUTING.md](https://git.sr.ht/~gotmax23/forge-srpm-macros/tree/main/item/CONTRIBUTING.md).
